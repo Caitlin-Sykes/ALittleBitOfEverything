@@ -1,0 +1,14 @@
+{
+  "Expand Menu": "icons/gravity-ui-chevrons-expand-from-line.svg",
+  "Collapse Menu": "icons/gravity-ui-chevrons-collapse-from-lines.svg",
+  "tools": [
+    {
+      "name": "File Extractor",
+      "icon": "icons/gravity-ui-file-zipper.svg"
+    },
+    {
+      "name": "PDF Combiner",
+      "icon": "icons/gravity-ui-files.svg"
+    }
+  ]
+}
