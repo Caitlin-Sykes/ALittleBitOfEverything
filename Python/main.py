@@ -1,134 +1,37 @@
 import sys
-from PySide6.QtCore import QSize, Signal
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QStackedWidget, QHBoxLayout, QListWidget, \
-    QListWidgetItem, QLabel
-from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QMainWindow
 import json
-
-from Python.widgets import CenteredIconWidget, MenuWidget
+from Python.gui.main_interface import MainInterface
 
 
 class MainWindow(QMainWindow):
-    sidebar_state_changed = Signal(bool)
+        def __init__(self):
+            super().__init__()
 
-    def __init__(self):
-        super().__init__()
-        
-        self.icon_widgets = []  # List to hold references to icon widgets
-        self.setWindowTitle("A Little Bit of Everything")
-        self.setGeometry(100, 100, 800, 600)
+            # Basic window properties
+            self.setWindowTitle("A Little Bit of Everything")
+            self.setGeometry(100, 100, 800, 600)
 
-        # Load the tool icons from the JSON file
-        try:
-            with open("icons_mapping.json", "r") as f:
-                self.icons = json.load(f)
-        except json.JSONDecodeError as e:
-            print(f"Error loading JSON: {e}")
-            self.icons = {}
+            # Load icons and tools
+            icons = self.load_icons("icons_mapping.json")
+            tools = icons.get("tools", [])
 
-        self.tools = self.icons.get("tools", [])
-        self.is_sidebar_collapsed = False  # Track sidebar state
+            # Initialize main interface
+            self.main_interface = MainInterface(icons, tools)
+            self.setCentralWidget(self.main_interface)
 
-        # Main layout to divide the left panel (list) and right panel (stacked widgets)
-        main_layout = QHBoxLayout()
+        def load_icons(self, file_path):
+            """Loads icons from a JSON file."""
+            try:
+                with open(file_path, "r") as f:
+                    return json.load(f)
+            except json.JSONDecodeError as e:
+                print(f"Error loading JSON: {e}")
+                return {}
 
-        # Create a stacked widget to manage pages
-        self.stacked_widget = QStackedWidget()
 
-        # Create a list widget for the vertical tabs (icons and text)
-        self.list_widget = QListWidget()
-        self.list_widget.setFixedWidth(150)
-        self.list_widget.setStyleSheet(""" 
-            QListWidget {
-                border: none;
-                padding: 0;
-                margin: 0;
-            }
-            QListWidget::item {
-                height: 50px;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-        """)
-
-        # Add the burger (collapse/expand) icon as the first item using CenteredIconWidget
-        self.burger_widget = CenteredIconWidget(self.icons.get("Collapse Menu", ""))
-        self.icon_widgets.append(self.burger_widget)  # Add burger icon to icon widgets list
-
-        burger_item = QListWidgetItem()
-        self.list_widget.addItem(burger_item)
-        self.list_widget.setItemWidget(burger_item, self.burger_widget)
-
-        # Add tool icons as separate items
-        for tool in self.tools:
-            icon_widget = CenteredIconWidget(tool["icon"])
-            self.icon_widgets.append(icon_widget)  # Add each icon to icon widgets list
-            item = QListWidgetItem()
-            self.list_widget.addItem(item)
-            self.list_widget.setItemWidget(item, icon_widget)
-
-        # Add color widgets to stacked widget
-        for tool in self.tools:
-            self.stacked_widget.addWidget(MenuWidget(tool["name"]))
-
-        # Connect list item click to change the stacked widget's current index and toggle sidebar
-        self.list_widget.currentRowChanged.connect(self.stacked_widget.setCurrentIndex)
-        self.list_widget.itemClicked.connect(self.handle_item_click)
-
-        # Connect the signal to update the icons and layout when sidebar state changes
-        for icon_widget in self.icon_widgets:
-            self.sidebar_state_changed.connect(icon_widget.update_icon)
-
-        # Add list widget and stacked widget to the main layout
-        main_layout.addWidget(self.list_widget)
-        main_layout.addWidget(self.stacked_widget)
-
-        # Set the central widget layout
-        central_widget = QWidget()
-        central_widget.setLayout(main_layout)
-        self.setCentralWidget(central_widget)
-
-        # Configure margins and layout stretch
-        self.setContentsMargins(0, 0, 0, 0)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setStretch(1, 1)
-
-        # Emit the signal to notify the initial state
-        self.sidebar_state_changed.emit(self.is_sidebar_collapsed)
-    def toggle_sidebar(self):
-        """ 
-        Toggle sidebar state and update its width
-        :param self
-        """
-        self.is_sidebar_collapsed = not self.is_sidebar_collapsed
-        self.list_widget.setFixedWidth(40 if self.is_sidebar_collapsed else 150)
-    
-        # Update the burger icon to reflect the new state
-        new_icon = "Expand Menu" if self.is_sidebar_collapsed else "Collapse Menu"
-        self.burger_widget.set_icon(self.icons.get(new_icon, ""))
-    
-        # Set text visibility based on sidebar state
-        for i in range(1, self.list_widget.count()):  # Start from 1 to skip the burger icon
-            item = self.list_widget.item(i)
-            item.setText("" if self.is_sidebar_collapsed else self.tools[i - 1]["name"])
-    
-        # Emit the signal to notify that the sidebar state has changed
-        self.sidebar_state_changed.emit(self.is_sidebar_collapsed)
-
-    def handle_item_click(self, item):
-        """ 
-        Handles clicks of the mav nar
-        :param self
-        :param item - the item clicked
-        """
-    
-        # Check if the burger icon was clicked
-        if self.list_widget.indexFromItem(item).row() == 0:
-            self.toggle_sidebar()
-            
-            
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.show()  # Show the main window
-    app.exec()  # Start the event loop
+    window.show()
+    app.exec()

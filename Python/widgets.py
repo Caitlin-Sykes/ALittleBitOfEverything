@@ -34,7 +34,6 @@ class MenuWidget(QWidget):
 
 class CenteredIconWidget(QWidget):
     """A widget to hold a centered icon with adjustable size."""
-
     def __init__(self, icon, collapsed=False):
         super().__init__()
 
@@ -58,7 +57,6 @@ class CenteredIconWidget(QWidget):
 
     def set_icon(self, collapsed=False):
         """Set the icon and adjust alignment based on sidebar state."""
-        # Adjust icon size based on collapsed state
         pixmap_size = 16 if collapsed else 32
         pixmap = self.original_icon.pixmap(pixmap_size, pixmap_size)
         self.icon_label.setPixmap(pixmap)
