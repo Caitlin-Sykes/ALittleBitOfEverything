@@ -1,6 +1,6 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Slot
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton
+from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout
 
 
 class MenuWidget(QWidget):
@@ -15,9 +15,9 @@ class MenuWidget(QWidget):
 
         # Create a label to show the tool name (can be dynamic)
         label = QLabel(f"Welcome to {tool_name}")
-        label.setAlignment(Qt.AlignCenter)  # Center align the text for each tab
+        label.setAlignment(Qt.AlignCenter)
 
-        # Create a simple button for each tool (this can be customized)
+        # Create a simple button for each tool
         button = QPushButton(f"Start {tool_name}")
         button.clicked.connect(self.on_button_click)
 
@@ -35,20 +35,38 @@ class MenuWidget(QWidget):
 class CenteredIconWidget(QWidget):
     """A widget to hold a centered icon with adjustable size."""
 
-    def __init__(self, icon_path):
+    def __init__(self, icon, collapsed=False):
         super().__init__()
-        self.layout = QVBoxLayout()
-        self.layout.setAlignment(Qt.AlignCenter)
-        self.label = QLabel()
-        self.set_icon(icon_path)  # Initial icon setup
-        self.layout.addWidget(self.label)
-        self.setLayout(self.layout)
 
-    def set_icon(self, icon_path):
-        """Set or update the icon displayed in the widget."""
-        self.icon_path = icon_path
-        self.update_icon_size(30)  # Default size when initialized
+        # Convert icon to QIcon if it's a string (path)
+        if isinstance(icon, str):
+            icon = QIcon(icon)
 
-    def update_icon_size(self, size):
-        """Update the icon size dynamically."""
-        self.label.setPixmap(QIcon(self.icon_path).pixmap(size, size))
+        self.original_icon = icon  # Store the original QIcon for resizing
+        self.icon_label = QLabel()
+
+        # Define the layout before calling set_icon
+        self.icon_layout = QHBoxLayout(self)
+        self.icon_layout.addWidget(self.icon_label)
+        self.icon_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Set the icon initially based on the collapsed state
+        self.set_icon(collapsed)
+
+        # Set initial alignment based on the collapsed state
+        self.icon_layout.setAlignment(Qt.AlignCenter if collapsed else Qt.AlignLeft)
+
+    def set_icon(self, collapsed=False):
+        """Set the icon and adjust alignment based on sidebar state."""
+        # Adjust icon size based on collapsed state
+        pixmap_size = 16 if collapsed else 32
+        pixmap = self.original_icon.pixmap(pixmap_size, pixmap_size)
+        self.icon_label.setPixmap(pixmap)
+
+        # Update alignment based on collapsed state
+        self.icon_layout.setAlignment(Qt.AlignCenter if collapsed else Qt.AlignLeft)
+
+    @Slot(bool)
+    def update_icon(self, collapsed):
+        """Slot to update the icon when sidebar state changes."""
+        self.set_icon(collapsed)
