@@ -1,5 +1,4 @@
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel, QStackedWidget, QHBoxLayout, \
-    QSizePolicy
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, Qt
 
 from Python.gui.widgets import MenuWidget, CenteredIconWidget
@@ -107,44 +106,37 @@ class Sidebar(QWidget):
 class MainSidebar(Sidebar):
     def __init__(self, icons, titles, stacked_widget):
         super().__init__(icons, titles)
-
-        # Store the passed stacked_widget (from MainInterface)
         self.stacked_widget = stacked_widget
-
-        # Set up the tool pages for the nav
         self.create_tool_pages()
 
     def create_tool_pages(self):
         """Create pages for each tool and add them to the stacked_widget."""
-        # Create a home page
-        home_page = QWidget()
-        home_layout = QVBoxLayout(home_page)
-        home_label = QLabel("Welcome to the Home Page!", home_page)
-        home_label.setAlignment(Qt.AlignCenter)
-        home_layout.addWidget(home_label)
-        self.stacked_widget.addWidget(home_page)
 
-        # Create a page for each tool
+        # Add a default page (e.g., Home Page)
+        default_page = QWidget()
+        default_layout = QVBoxLayout(default_page)
+        default_label = QLabel("Welcome to the Default Page!", default_page)
+        default_label.setAlignment(Qt.AlignCenter)
+        default_layout.addWidget(default_label)
+        self.stacked_widget.addWidget(default_page)
+    
+        # Add other tool pages
         for tool in self.titles:
-            print(tool)
             page_widget = QWidget()
             page_layout = QVBoxLayout(page_widget)
-
-            # Add content (e.g., a label with the tool's name)
             content_label = QLabel(f"Welcome to {tool['name']}!", page_widget)
             content_label.setAlignment(Qt.AlignCenter)
             page_layout.addWidget(content_label)
-
             self.stacked_widget.addWidget(page_widget)
-        
-    def handle_item_click(self, item):
-        """ Handles sidebar clicks and toggles sidebar if burger icon is clicked."""
 
+    def handle_item_click(self, item):
+        """Handles sidebar clicks."""
         index = self.list_widget.indexFromItem(item).row()
 
         if index == 0:
-            # Toggle sidebar when burger icon is clicked
             self.toggle_sidebar()
+            self.stacked_widget.setCurrentIndex(0)
         else:
-            # If expanded, show text, if collapsed, hide text
-            item.setText("" if self.is_sidebar_collapsed else self.titles[index - 1]["name"])
+            # Update the stacked widget panel
+            self.stacked_widget.setCurrentIndex(index)
+            print(f"Switching to panel: {index}")

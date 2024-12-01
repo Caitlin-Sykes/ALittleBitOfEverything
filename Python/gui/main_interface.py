@@ -1,10 +1,7 @@
-from PySide6.QtCore import Signal, Slot, Qt
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QStackedWidget, QListWidget, QListWidgetItem, QVBoxLayout, QLabel, \
-    QSizePolicy
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QStackedWidget, QSizePolicy
 
 from Python.gui.sidebar import MainSidebar
-from Python.gui.widgets import CenteredIconWidget, MenuWidget
-
 
 class MainInterface(QWidget):
     def __init__(self, icons, tools):
@@ -16,8 +13,8 @@ class MainInterface(QWidget):
 
         # Main layout setup (horizontal layout)
         self.main_layout = QHBoxLayout(self)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
-        self.main_layout.setSpacing(0)  # Remove spacing
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
 
         # Create the stacked widget (for content panel)
         self.stacked_widget = QStackedWidget()
@@ -28,8 +25,8 @@ class MainInterface(QWidget):
         self.mainSidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
         # Add the sidebar and stacked widget to the main layout
-        self.main_layout.addWidget(self.mainSidebar, alignment=Qt.AlignLeft)  # Sidebar on the left
-        self.main_layout.addWidget(self.stacked_widget)  # Content panel on the right
+        self.main_layout.addWidget(self.mainSidebar, alignment=Qt.AlignLeft) 
+        self.main_layout.addWidget(self.stacked_widget)
 
         # Set the main layout for the MainInterface widget
         self.setLayout(self.main_layout)
