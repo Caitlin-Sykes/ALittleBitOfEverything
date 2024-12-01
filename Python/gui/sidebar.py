@@ -30,6 +30,9 @@ class Sidebar(QWidget):
         self.list_widget = self.create_sidebar()
         self.layout.addWidget(self.list_widget)
 
+        # Init burger widget for sidebar
+        self.burger_widget = CenteredIconWidget(self.icons.get("Collapse Menu", ""))
+
         # Populate sidebar with icons
         self.populate_sidebar()
 
@@ -59,7 +62,6 @@ class Sidebar(QWidget):
     def populate_sidebar(self):
         """Adds burger icon and tool icons to the sidebar."""
 
-        self.burger_widget = CenteredIconWidget(self.icons.get("Collapse Menu", ""))
         self.icon_widgets.append(self.burger_widget)
 
         burger_item = QListWidgetItem()
@@ -85,7 +87,7 @@ class Sidebar(QWidget):
     def toggle_sidebar(self):
         """Toggles sidebar between collapsed and expanded."""
         self.is_sidebar_collapsed = not self.is_sidebar_collapsed
-        self.list_widget.setFixedWidth(40 if self.is_sidebar_collapsed else 150)
+        self.list_widget.setFixedWidth(60 if self.is_sidebar_collapsed else 150)
 
         new_icon = "Expand Menu" if self.is_sidebar_collapsed else "Collapse Menu"
         self.burger_widget.set_icon(self.icons.get(new_icon, ""))
@@ -104,6 +106,7 @@ class Sidebar(QWidget):
 
 
 class MainSidebar(Sidebar):
+    """This is the main sidebar class for navigation"""
     def __init__(self, icons, titles, stacked_widget):
         super().__init__(icons, titles)
         self.stacked_widget = stacked_widget
@@ -112,7 +115,7 @@ class MainSidebar(Sidebar):
     def create_tool_pages(self):
         """Create pages for each tool and add them to the stacked_widget."""
 
-        # Add a default page (e.g., Home Page)
+        # Add a default page
         default_page = QWidget()
         default_layout = QVBoxLayout(default_page)
         default_label = QLabel("Welcome to the Default Page!", default_page)
@@ -130,7 +133,8 @@ class MainSidebar(Sidebar):
             self.stacked_widget.addWidget(page_widget)
 
     def handle_item_click(self, item):
-        """Handles sidebar clicks."""
+        """Handles sidebar clicks.
+        :param item: QListWidgetItem, the item that is clicked in the nav"""
         index = self.list_widget.indexFromItem(item).row()
 
         if index == 0:
