@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel, QSizePolicy
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, Qt
 
 from Python.gui.widgets import MenuWidget, CenteredIconWidget
@@ -70,7 +70,6 @@ class Sidebar(QWidget):
 
         for tool in self.titles:
             icon_widget = MenuWidget(tool["name"], tool["icon"])
-            print(tool["name"])
             self.icon_widgets.append(icon_widget)
             item = QListWidgetItem()
             self.list_widget.addItem(item)
@@ -86,7 +85,6 @@ class Sidebar(QWidget):
                 # Resize for burger widget
                 icon_widget.set_icon(pixmap_size=24 if collapsed else 30)
 
-
     def toggle_sidebar(self):
         """Toggles sidebar between collapsed and expanded."""
         self.is_sidebar_collapsed = not self.is_sidebar_collapsed
@@ -100,12 +98,6 @@ class Sidebar(QWidget):
             item.setText("" if self.is_sidebar_collapsed else self.titles[i - 1]["name"])
 
         self.sidebar_state_changed.emit(self.is_sidebar_collapsed)
-
-    def handle_item_click(self, item):
-        """Handles sidebar clicks.
-        :param item: QListWidgetItem, the item that is clicked in the nav"""
-
-        print("hey")
 
 
 class MainSidebar(Sidebar):
@@ -147,4 +139,3 @@ class MainSidebar(Sidebar):
         else:
             # Update the stacked widget panel
             self.stacked_widget.setCurrentIndex(index)
-            print(f"Switching to panel: {index}")

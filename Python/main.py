@@ -1,4 +1,6 @@
 import sys
+
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication, QMainWindow
 import json
 from Python.gui.main_interface import MainInterface
@@ -35,6 +37,10 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    
+    # Set the global font
+    app.setFont(QFont("Calibri", 12))
+    
     window = MainWindow()
     window.show()
     app.exec()
