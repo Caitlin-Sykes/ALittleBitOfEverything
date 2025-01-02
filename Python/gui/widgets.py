@@ -58,7 +58,7 @@ class MenuWidget(BaseIconWidget):
 
     def set_icon(self, collapsed=False):
         """Set icon size and adjust alignment based on collapse state."""
-        pixmap_size = 16 if collapsed else 24
+        pixmap_size = 24 if collapsed else 20
         alignment = Qt.AlignCenter if collapsed else Qt.AlignLeft
         super().set_icon(pixmap_size=pixmap_size, alignment=alignment)
 
@@ -77,6 +77,7 @@ class CenteredIconWidget(BaseIconWidget):
 
     def set_icon(self, always_centered=True, pixmap_size=30):
         """Set the icon size and center alignment.
-        :param always_centered: Whether to center the icon or not."""
+        :param always_centered: Whether to center the icon or not.
+        :param pixmap_size: size of the icon"""
         alignment = Qt.AlignCenter
         super().set_icon(pixmap_size=pixmap_size, alignment=alignment)

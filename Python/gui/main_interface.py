@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QStackedWidget, QSizePolicy
 
 from Python.gui.sidebar import MainSidebar
 
+
 class MainInterface(QWidget):
     def __init__(self, icons, tools):
         super().__init__()
@@ -25,7 +26,7 @@ class MainInterface(QWidget):
         self.mainSidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
         # Add the sidebar and stacked widget to the main layout
-        self.main_layout.addWidget(self.mainSidebar, alignment=Qt.AlignLeft) 
+        self.main_layout.addWidget(self.mainSidebar, alignment=Qt.AlignLeft)
         self.main_layout.addWidget(self.stacked_widget)
 
         # Set the main layout for the MainInterface widget

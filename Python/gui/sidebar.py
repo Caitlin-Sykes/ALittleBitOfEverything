@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel, QSizePolicy
 from PySide6.QtCore import Signal, Qt
 
 from Python.gui.widgets import MenuWidget, CenteredIconWidget
@@ -82,7 +82,7 @@ class Sidebar(QWidget):
                 icon_widget.set_icon(collapsed)
             else:
                 # Resize for burger widget
-                icon_widget.set_icon(pixmap_size=16 if collapsed else 32)
+                icon_widget.set_icon(pixmap_size=24 if collapsed else 30)
 
     def toggle_sidebar(self):
         """Toggles sidebar between collapsed and expanded."""
@@ -107,6 +107,7 @@ class Sidebar(QWidget):
 
 class MainSidebar(Sidebar):
     """This is the main sidebar class for navigation"""
+
     def __init__(self, icons, titles, stacked_widget):
         super().__init__(icons, titles)
         self.stacked_widget = stacked_widget
@@ -122,7 +123,7 @@ class MainSidebar(Sidebar):
         default_label.setAlignment(Qt.AlignCenter)
         default_layout.addWidget(default_label)
         self.stacked_widget.addWidget(default_page)
-    
+
         # Add other tool pages
         for tool in self.titles:
             page_widget = QWidget()
