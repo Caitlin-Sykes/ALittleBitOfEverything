@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 
+
 class PDFCombinerPage(QWidget):
     def __init__(self):
         super().__init__()
