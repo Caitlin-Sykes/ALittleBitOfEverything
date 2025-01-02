@@ -1,3 +1,5 @@
+import importlib
+
 from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, Qt
 
@@ -118,15 +120,38 @@ class MainSidebar(Sidebar):
         default_label.setAlignment(Qt.AlignCenter)
         default_layout.addWidget(default_label)
         self.stacked_widget.addWidget(default_page)
-
-        # Add other tool pages
+    
+        # Add other tool pages dynamically
         for tool in self.titles:
-            page_widget = QWidget()
-            page_layout = QVBoxLayout(page_widget)
-            content_label = QLabel(f"Welcome to {tool['name']}!", page_widget)
-            content_label.setAlignment(Qt.AlignCenter)
-            page_layout.addWidget(content_label)
-            self.stacked_widget.addWidget(page_widget)
+            # Gets the tool name and the tool page (stored in tools/)
+            tool_name = tool['name']
+            tool_page = tool['page']
+    
+            # Dynamically import the tool's page script
+            try:
+                # Convert the file path to a valid Python module name
+                module_name = tool_page.replace(".py", "").replace("/", ".")
+                file_path = tool_page
+    
+                # Create a module spec
+                spec = importlib.util.spec_from_file_location(module_name, file_path)
+                tool_module = importlib.util.module_from_spec(spec)
+    
+                # Load the module
+                spec.loader.exec_module(tool_module)
+    
+                # Assuming the class name in the script matches the tool name (e.g., "PDFCombinerPage" for "PDF Combiner")
+                class_name = f"{tool_name.replace(' ', '')}Page"
+                tool_class = getattr(tool_module, class_name)
+    
+                # Create the page widget
+                page_widget = tool_class()
+    
+                # Add the page to the stacked widget
+                self.stacked_widget.addWidget(page_widget)
+    
+            except ImportError as e:
+                print(f"Error importing {tool_name}: {e}")
 
     def handle_item_click(self, item):
         """Handles sidebar clicks.
