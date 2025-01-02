@@ -4,11 +4,13 @@
   "tools": [
     {
       "name": "File Extractor",
-      "icon": "icons/gravity-ui-file-zipper.svg"
+      "icon": "icons/gravity-ui-file-zipper.svg",
+      "page": "tools/file_extractor/file_extractor.py"
     },
     {
       "name": "PDF Combiner",
-      "icon": "icons/gravity-ui-files.svg"
+      "icon": "icons/gravity-ui-files.svg",
+      "page": "tools/pdf_combiner/pdf_combiner.py"
     }
   ]
 }

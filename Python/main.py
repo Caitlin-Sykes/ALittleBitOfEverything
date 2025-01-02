@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 800, 600)
 
         # Load icons and tools
-        icons = load_icons("icons_mapping.json")
+        icons = load_icons("mapping.json")
         tools = icons.get("tools", [])
 
         # Initialize main interface
