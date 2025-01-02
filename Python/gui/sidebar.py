@@ -70,6 +70,7 @@ class Sidebar(QWidget):
 
         for tool in self.titles:
             icon_widget = MenuWidget(tool["name"], tool["icon"])
+            print(tool["name"])
             self.icon_widgets.append(icon_widget)
             item = QListWidgetItem()
             self.list_widget.addItem(item)
@@ -80,9 +81,11 @@ class Sidebar(QWidget):
         for icon_widget in self.icon_widgets:
             if isinstance(icon_widget, MenuWidget):
                 icon_widget.set_icon(collapsed)
+                icon_widget.set_text(icon_widget.tool_name, collapsed)
             else:
                 # Resize for burger widget
                 icon_widget.set_icon(pixmap_size=24 if collapsed else 30)
+
 
     def toggle_sidebar(self):
         """Toggles sidebar between collapsed and expanded."""

@@ -11,21 +11,22 @@ class BaseIconWidget(QWidget):
         :param icon: The icon to display.
         :param text: The text to display.
         """
-
         super().__init__()
 
-        # Store the icon and initialize the label
+        # Store the icon and initialize the labels
         self.original_icon = QIcon(icon) if isinstance(icon, str) else icon
         self.icon_label = QLabel()
         self.text_label = QLabel(text)
 
-        # Layout setup for icon
+        # Layout setup for icon and text
         self.icon_layout = QHBoxLayout(self)
-        self.icon_layout.addWidget(self.icon_label)
+        self.icon_layout.addWidget(self.icon_label)  # Add icon
         self.icon_layout.setContentsMargins(0, 0, 0, 0)
+        self.icon_layout.setSpacing(5)  # Space between icon and text
 
-        # Set default alignment and visibility for the text
-        self.text_label.setVisible(bool(text))
+        # Add the text label dynamically if it has text
+        if text:
+            self.icon_layout.addWidget(self.text_label)
 
     def set_icon(self, pixmap_size=32, alignment=Qt.AlignLeft):
         """Set the icon with the specified size and alignment."""
@@ -37,11 +38,25 @@ class BaseIconWidget(QWidget):
         self.icon_label.setPixmap(pixmap)
         self.icon_layout.setAlignment(alignment)
 
-    def set_text(self, text):
-        """Update the text displayed in the widget."""
-        print("HIA")
+    def set_text(self, text, collapsed=False):
+        """Set the text for the icon widget and adjust its visibility.
+        :param text: The text to display.
+        :param collapsed: Whether the nav is collapsed or not."""
+        
+        # Update the text content
         self.text_label.setText(text)
-        self.text_label.setVisible(bool(text))
+
+        # If collapsed, removes the text label
+        if collapsed:
+            # Remove the text_label from the layout when collapsed
+            if self.text_label.parent() == self:
+                self.icon_layout.removeWidget(self.text_label)
+                self.text_label.hide()
+        # If fully expanded, shows the text
+        else:
+            # Add the text_label to the layout when expanded
+            self.icon_layout.addWidget(self.text_label)
+            self.text_label.show()
 
 
 class MenuWidget(BaseIconWidget):
@@ -55,16 +70,13 @@ class MenuWidget(BaseIconWidget):
 
         # Set initial icon alignment and size
         self.set_icon(collapsed=False)
+        self.set_text(self.tool_name, collapsed=False)
 
     def set_icon(self, collapsed=False):
         """Set icon size and adjust alignment based on collapse state."""
         pixmap_size = 24 if collapsed else 20
         alignment = Qt.AlignCenter if collapsed else Qt.AlignLeft
         super().set_icon(pixmap_size=pixmap_size, alignment=alignment)
-
-    def on_button_click(self):
-        """Handles the button click event."""
-        print(f"{self.tool_name} started!")
 
 
 class CenteredIconWidget(BaseIconWidget):
