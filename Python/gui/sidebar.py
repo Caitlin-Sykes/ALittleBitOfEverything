@@ -1,7 +1,7 @@
 import importlib
 
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, Qt
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QLabel
 
 from Python.gui.widgets import MenuWidget, CenteredIconWidget
 
@@ -141,7 +141,7 @@ class MainSidebar(Sidebar):
                 spec.loader.exec_module(tool_module)
     
                 # Assuming the class name in the script matches the tool name (e.g., "PDFCombinerPage" for "PDF Combiner")
-                class_name = f"{tool_name.replace(' ', '')}Page"
+                class_name = f"{tool_name.replace(' ', '')}UI"
                 tool_class = getattr(tool_module, class_name)
     
                 # Create the page widget
